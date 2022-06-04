@@ -24,6 +24,7 @@
   "author": "Alex Ferrari",
   "license": "MIT",
   "dependencies": {
+    "css.escape": "^1.5.1",
     "jsdom": "^19.0.0"
   }
 }

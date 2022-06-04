@@ -1,5 +1,6 @@
 ﻿import { JSDOM } from "jsdom";
 import { ElementHandleAdapter } from "./ElementHandleAdapter";
+require("css.escape");
 
 const Node = new JSDOM("").window.Node;
 
