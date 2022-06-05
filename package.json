@@ -24,11 +24,10 @@
     "lint": "eslint ."
   },
   "keywords": [
-    "screenshot",
-    "parser",
-    "parsing",
-    "scraping",
-    "scraper"
+    "playwright",
+    "DOM",
+    "chrome",
+    "scraping"
   ],
   "author": "Alex Ferrari",
   "license": "MIT",
