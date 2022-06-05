@@ -9,6 +9,7 @@
     "eslint-config-prettier": "^8.5.0",
     "eslint-import-resolver-typescript": "^2.7.1",
     "eslint-plugin-import": "^2.26.0",
+    "jest": "^28.1.0",
     "ts-node": "^10.8.0",
     "tslib": "^2.4.0",
     "typescript": "^4.7.3"
@@ -18,7 +19,7 @@
   "description": "Given a URL, it returns a page screenshot with a json containing coordinates and selectors for each element",
   "main": "index.js",
   "scripts": {
-    "test": "npm run test",
+    "test": "jest",
     "lint": "eslint ."
   },
   "keywords": [
