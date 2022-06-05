@@ -8,7 +8,7 @@ require("css.escape");
 
 const { Node } = new JSDOM("").window;
 
-export class Step {
+class Step {
   value: string;
 
   optimized: boolean;
