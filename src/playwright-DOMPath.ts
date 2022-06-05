@@ -1,6 +1,8 @@
-﻿import { JSDOM } from "jsdom";
+﻿/* eslint-disable no-continue */
+/* eslint-disable no-shadow */
+import { JSDOM } from "jsdom";
 import { ElementHandle } from "playwright";
-import { ElementHandleAdapter } from "./ElementHandleAdapter";
+import ElementHandleAdapter from "./ElementHandleAdapter";
 
 require("css.escape");
 
@@ -27,6 +29,7 @@ const cssPathStep = async function cssPathStep(
   isTargetNode: boolean
 ): Promise<Step | null> {
   function idSelector(id: string): string {
+    // eslint-disable-next-line no-undef
     return `#${CSS.escape(id)}`;
   }
 
@@ -176,17 +179,7 @@ export const cssPath = async function cssPath(
   return steps.join(" > ");
 };
 
-// export const fullQualifiedSelector = async function fullQualifiedSelector(
-//   node: ElementHandleAdapter,
-//   justSelector?: boolean
-// ): Promise<string> {
-//   if ((await node.nodeType()) !== Node.ELEMENT_NODE) {
-//     return (await node.localName()) || (await node.nodeName()).toLowerCase();
-//   }
-//   return cssPath(node, justSelector);
-// };
-
-export const xPath = async function (
+export const xPath = async function xPath(
   elHandle: ElementHandle,
   optimized?: boolean
 ): Promise<string> {

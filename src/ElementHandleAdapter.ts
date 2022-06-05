@@ -1,10 +1,15 @@
 ﻿import { ElementHandle } from "playwright";
 
-export class ElementHandleAdapter {
+class ElementHandleAdapter {
   #node: ElementHandle;
+
   #nodeType: number | undefined;
+
   #nodeName: string | undefined = undefined;
+
   #localName: string | undefined;
+
+  // eslint-disable-next-line no-use-before-define
   #parentNode: ElementHandleAdapter | null = null;
 
   constructor(elHandle: ElementHandle) {
@@ -55,36 +60,38 @@ export class ElementHandleAdapter {
     return this.#node.getAttribute(attr);
   }
 
-  async getProperty(property: string): Promise<any | null> {
+  async getProperty(property: string): Promise<unknown | null> {
     return (await this.#node.getProperty(property)).jsonValue();
   }
 
   async nodeNameInCorrectCase(): Promise<string> {
     const shadowRoot = (await this.#node.getProperty(
       "shadowRoot"
+      // eslint-disable-next-line no-undef
     )) as unknown as ShadowRoot;
     const shadowRootType = shadowRoot && shadowRoot.mode;
     if (shadowRootType) {
-      return "#shadow-root (" + shadowRootType + ")";
+      return `#shadow-root (${shadowRootType})`;
     }
 
     // If there is no local #name, it's case sensitive
     if (!(await this.localName())) {
-      return await this.nodeName();
+      return this.nodeName();
     }
 
     // If the names are different lengths, there is a prefix and it's case sensitive
     if ((await this.localName()).length !== (await this.nodeName()).length) {
-      return await this.nodeName();
+      return this.nodeName();
     }
 
     // Return the localname, which will be case insensitive if its an html node
-    return await this.localName();
+    return this.localName();
   }
 
   async isEqualTo(other: ElementHandleAdapter): Promise<boolean> {
     const otherNode = other.#node;
     return this.#node.evaluate(
+      // eslint-disable-next-line no-shadow, eqeqeq
       (thisNode, otherNode) => thisNode == otherNode,
       otherNode
     );
@@ -93,8 +100,11 @@ export class ElementHandleAdapter {
   async isStrictlyEqualTo(other: ElementHandleAdapter): Promise<boolean> {
     const otherNode = other.#node;
     return this.#node.evaluate(
+      // eslint-disable-next-line no-shadow
       (thisNode, otherNode) => thisNode === otherNode,
       otherNode
     );
   }
 }
+
+export default ElementHandleAdapter;
