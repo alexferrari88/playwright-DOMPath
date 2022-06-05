@@ -17,15 +17,13 @@ Install with npm
 #### cssPath
 
 ```typescript
-cssPath = (elHandle: Playwright.ElementHandle,
-  optimized?: boolean) => Promise<string>
+cssPath = (elHandle: Playwright.ElementHandle, optimized?: boolean) => Promise<string>
 ```
 
 #### xPath
 
 ```typescript
-xPath = (elHandle: Playwright.ElementHandle,
-  optimized?: boolean) => Promise<string>
+xPath = (elHandle: Playwright.ElementHandle, optimized?: boolean) => Promise<string>
 ```
 
 ## Usage 🔧
