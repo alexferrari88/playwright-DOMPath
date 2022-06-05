@@ -7,7 +7,7 @@
     "plugin:@typescript-eslint/recommended",
     "plugin:import/recommended",
     "plugin:import/typescript",
-    "airbnb-base",
+    // "airbnb-base",
     "prettier",
   ],
   rules: {
