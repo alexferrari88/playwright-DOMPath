@@ -1,11 +1,11 @@
-﻿import { expect, test } from "@playwright/test";
+﻿import { ElementHandle, expect, test } from "@playwright/test";
 import { cssPath, xPath } from "../src/DOMPath";
 
 test.describe("playwright-DOMPath", () => {
   test.describe("cssPath", () => {
     test("should return the correct path for id", async ({ page }) => {
       await page.goto(pageFromTemplate(`<div id="test">test</div>`));
-      const div = await page.$("#test");
+      const div = (await page.$("#test")) as ElementHandle;
       const path = await cssPath(div);
       await expect(path).toBe("div#test");
     });
@@ -16,7 +16,7 @@ test.describe("playwright-DOMPath", () => {
       await page.goto(
         pageFromTemplate(`<div class="test">test</div><div>test2</div>`)
       );
-      const div = await page.$(".test");
+      const div = (await page.$(".test")) as ElementHandle;
       const path = await cssPath(div);
       await expect(path).toBe("html > body > div.test");
     });
@@ -27,7 +27,7 @@ test.describe("playwright-DOMPath", () => {
       await page.goto(
         pageFromTemplate(`<div class="tst test">test</div><div>test2</div>`)
       );
-      const div = await page.$(".test");
+      const div = (await page.$(".test")) as ElementHandle;
       const path = await cssPath(div);
       await expect(path).toBe("html > body > div.tst.test");
     });
@@ -40,7 +40,7 @@ test.describe("playwright-DOMPath", () => {
           `<div class="main">main<div class="child">child</div><div></div></div>`
         )
       );
-      const div = await page.$(".main .child");
+      const div = (await page.$(".main .child")) as ElementHandle;
       const path = await cssPath(div);
       await expect(path).toBe("html > body > div > div.child");
     });
@@ -62,7 +62,7 @@ test.describe("playwright-DOMPath", () => {
       page,
     }) => {
       await page.goto(pageFromTemplate(`<div><div>test</div></div>`));
-      const div = await page.$("div > div");
+      const div = (await page.$("div > div")) as ElementHandle;
       const path = await cssPath(div);
       await expect(path).toBe("html > body > div > div");
     });
@@ -71,7 +71,7 @@ test.describe("playwright-DOMPath", () => {
   test.describe("xPath", () => {
     test("should return the correct path for id", async ({ page }) => {
       await page.goto(pageFromTemplate(`<div id="test">test</div>`));
-      const div = await page.$("#test");
+      const div = (await page.$("#test")) as ElementHandle;
       const path = await xPath(div);
       await expect(path).toBe("/html/body/div");
     });
@@ -82,7 +82,7 @@ test.describe("playwright-DOMPath", () => {
       await page.goto(
         pageFromTemplate(`<div class="test">test</div><div>test2</div>`)
       );
-      const div = await page.$(".test");
+      const div = (await page.$(".test")) as ElementHandle;
       const path = await xPath(div);
       await expect(path).toBe("/html/body/div[1]");
     });
@@ -95,7 +95,7 @@ test.describe("playwright-DOMPath", () => {
           `<div class="main">main<div class="child">child</div><div></div></div>`
         )
       );
-      const div = await page.$(".main .child");
+      const div = (await page.$(".main .child")) as ElementHandle;
       const path = await xPath(div);
       await expect(path).toBe("/html/body/div/div[1]");
     });
@@ -122,7 +122,7 @@ test.describe("playwright-DOMPath", () => {
  * @param {string} template
  * @returns {string}
  */
-function pageFromTemplate(template /* string */) /* string */ {
+function pageFromTemplate(template: string): string {
   return `data:text/html;charset=utf-8,<!DOCTYPE html>
         <html>
             <body>
