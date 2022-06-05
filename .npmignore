@@ -1,0 +1,5 @@
+﻿.vscode
+.github
+playwright-report
+tests
+playwright.config.*

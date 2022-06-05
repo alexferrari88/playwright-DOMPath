@@ -17,10 +17,12 @@
   "name": "playwright-dompath",
   "version": "0.0.1",
   "description": "Retrieve xpath and css selectors from ElementHandle objects in Playwright",
-  "main": "index.js",
+  "main": "./dist/DOMPath.js",
+  "types": "./dist/DOMPath.d.js",
   "scripts": {
     "test": "jest",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "prebuild": "tsc"
   },
   "keywords": [
     "playwright",
