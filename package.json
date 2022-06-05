@@ -14,9 +14,9 @@
     "tslib": "^2.4.0",
     "typescript": "^4.7.3"
   },
-  "name": "pagemapper",
+  "name": "playwright-dompath",
   "version": "0.0.1",
-  "description": "Given a URL, it returns a page screenshot with a json containing coordinates and selectors for each element",
+  "description": "Retrieve xpath and css selectors from ElementHandle objects in Playwright",
   "main": "index.js",
   "scripts": {
     "test": "jest",
