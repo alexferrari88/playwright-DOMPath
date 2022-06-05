@@ -1,54 +1,34 @@
 ﻿import { JSDOM } from "jsdom";
 import { ElementHandleAdapter } from "./ElementHandleAdapter";
+
 require("css.escape");
 
-const Node = new JSDOM("").window.Node;
+const { Node } = new JSDOM("").window;
 
-export const fullQualifiedSelector = async function (
-  node: ElementHandleAdapter,
-  justSelector?: boolean
-): Promise<string> {
-  if ((await node.nodeType()) !== Node.ELEMENT_NODE) {
-    return (await node.localName()) || (await node.nodeName()).toLowerCase();
-  }
-  return cssPath(node, justSelector);
-};
+export class Step {
+  value: string;
 
-export const cssPath = async function (
-  node: ElementHandleAdapter,
-  optimized?: boolean
-): Promise<string> {
-  if ((await node.nodeType()) !== Node.ELEMENT_NODE) {
-    return "";
+  optimized: boolean;
+
+  constructor(value: string, optimized: boolean) {
+    this.value = value;
+    this.optimized = optimized || false;
   }
 
-  const steps = [];
-  let contextNode: ElementHandleAdapter | null =
-    node as ElementHandleAdapter | null;
-  while (contextNode) {
-    const step = await cssPathStep(
-      contextNode,
-      Boolean(optimized),
-      await contextNode.isStrictlyEqualTo(node)
-    );
-    if (!step) {
-      break;
-    } // Error - bail out early.
-    steps.push(step);
-    if (step.optimized) {
-      break;
-    }
-    contextNode = await contextNode.parentNode();
+  toString(): string {
+    return this.value;
   }
+}
 
-  steps.reverse();
-  return steps.join(" > ");
-};
-const cssPathStep = async function (
+const cssPathStep = async function cssPathStep(
   node: ElementHandleAdapter,
   optimized: boolean,
   isTargetNode: boolean
 ): Promise<Step | null> {
+  function idSelector(id: string): string {
+    return `#${CSS.escape(id)}`;
+  }
+
   if ((await node.nodeType()) !== Node.ELEMENT_NODE) {
     return null;
   }
@@ -88,14 +68,11 @@ const cssPathStep = async function (
     return classAttribute
       .split(/\s+/g)
       .filter(Boolean)
-      .map(function (name) {
-        // The prefix is required to store "__proto__" in a object-based map.
-        return "$" + name;
-      });
-  }
-
-  function idSelector(id: string): string {
-    return "#" + CSS.escape(id);
+      .map(
+        (name) =>
+          // The prefix is required to store "__proto__" in a object-based map.
+          `$${name}`
+      );
   }
 
   const prefixedOwnClassNamesArray = await prefixedElementClassNames(node);
@@ -153,18 +130,58 @@ const cssPathStep = async function (
     !(await node.getAttribute("id")) &&
     !(await node.getAttribute("class"))
   ) {
-    result +=
-      "[type=" + CSS.escape((await node.getAttribute("type")) || "") + "]";
+    result += `[type=${CSS.escape((await node.getAttribute("type")) || "")}]`;
   }
   if (needsNthChild) {
-    result += ":nth-child(" + (ownIndex + 1) + ")";
+    result += `:nth-child(${ownIndex + 1})`;
   } else if (needsClassNames) {
     for (const prefixedName of prefixedOwnClassNamesArray) {
-      result += "." + CSS.escape(prefixedName.slice(1));
+      result += `.${CSS.escape(prefixedName.slice(1))}`;
     }
   }
 
   return new Step(result, false);
+};
+
+export const cssPath = async function cssPath(
+  node: ElementHandleAdapter,
+  optimized?: boolean
+): Promise<string> {
+  if ((await node.nodeType()) !== Node.ELEMENT_NODE) {
+    return "";
+  }
+
+  const steps = [];
+  let contextNode: ElementHandleAdapter | null =
+    node as ElementHandleAdapter | null;
+  while (contextNode) {
+    const step = await cssPathStep(
+      contextNode,
+      Boolean(optimized),
+      await contextNode.isStrictlyEqualTo(node)
+    );
+    if (!step) {
+      break;
+    } // Error - bail out early.
+    steps.push(step);
+    if (step.optimized) {
+      break;
+    }
+    contextNode = await contextNode.parentNode();
+  }
+
+  steps.reverse();
+  return steps.join(" > ");
+};
+
+export const fullQualifiedSelector = async function (
+  node: ElementHandleAdapter,
+  justSelector?: boolean
+): Promise<string> {
+  if ((await node.nodeType()) !== Node.ELEMENT_NODE) {
+    return (await node.localName()) || (await node.nodeName()).toLowerCase();
+  }
+  return cssPath(node, justSelector);
 };
 
 export const xPath = async function (
@@ -207,15 +224,12 @@ const xPathValue = async function (
   switch (await node.nodeType()) {
     case Node.ELEMENT_NODE:
       if (optimized && (await node.getAttribute("id"))) {
-        return new Step(
-          '//*[@id="' + (await node.getAttribute("id")) + '"]',
-          true
-        );
+        return new Step(`//*[@id="${await node.getAttribute("id")}"]`, true);
       }
       ownValue = await node.localName();
       break;
     case Node.ATTRIBUTE_NODE:
-      ownValue = "@" + (await node.nodeName());
+      ownValue = `@${await node.nodeName()}`;
       break;
     case Node.TEXT_NODE:
     case Node.CDATA_SECTION_NODE:
@@ -236,7 +250,7 @@ const xPathValue = async function (
   }
 
   if (ownIndex > 0) {
-    ownValue += "[" + ownIndex + "]";
+    ownValue += `[${ownIndex}]`;
   }
 
   return new Step(ownValue, (await node.nodeType()) === Node.DOCUMENT_NODE);
@@ -309,19 +323,6 @@ const xPathIndex = async function (
   }
   return -1; // An error occurred: |node| not found in parent's children.
 };
-
-export class Step {
-  value: string;
-  optimized: boolean;
-  constructor(value: string, optimized: boolean) {
-    this.value = value;
-    this.optimized = optimized || false;
-  }
-
-  toString(): string {
-    return this.value;
-  }
-}
 
 // export const canGetJSPath = function (node: ElementHandleAdapter): boolean {
 //   let wp: (ElementHandleAdapter | null) | ElementHandleAdapter = node;
