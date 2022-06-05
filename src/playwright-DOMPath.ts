@@ -1,4 +1,5 @@
 ﻿import { JSDOM } from "jsdom";
+import { ElementHandle } from "playwright";
 import { ElementHandleAdapter } from "./ElementHandleAdapter";
 
 require("css.escape");
@@ -144,9 +145,10 @@ const cssPathStep = async function cssPathStep(
 };
 
 export const cssPath = async function cssPath(
-  node: ElementHandleAdapter,
+  elHandle: ElementHandle,
   optimized?: boolean
 ): Promise<string> {
+  const node = new ElementHandleAdapter(elHandle);
   if ((await node.nodeType()) !== Node.ELEMENT_NODE) {
     return "";
   }
@@ -174,20 +176,21 @@ export const cssPath = async function cssPath(
   return steps.join(" > ");
 };
 
-export const fullQualifiedSelector = async function (
-  node: ElementHandleAdapter,
-  justSelector?: boolean
-): Promise<string> {
-  if ((await node.nodeType()) !== Node.ELEMENT_NODE) {
-    return (await node.localName()) || (await node.nodeName()).toLowerCase();
-  }
-  return cssPath(node, justSelector);
-};
+// export const fullQualifiedSelector = async function fullQualifiedSelector(
+//   node: ElementHandleAdapter,
+//   justSelector?: boolean
+// ): Promise<string> {
+//   if ((await node.nodeType()) !== Node.ELEMENT_NODE) {
+//     return (await node.localName()) || (await node.nodeName()).toLowerCase();
+//   }
+//   return cssPath(node, justSelector);
+// };
 
 export const xPath = async function (
-  node: ElementHandleAdapter,
+  elHandle: ElementHandle,
   optimized?: boolean
 ): Promise<string> {
+  const node = new ElementHandleAdapter(elHandle);
   if ((await node.nodeType()) === Node.DOCUMENT_NODE) {
     return "/";
   }
@@ -211,7 +214,7 @@ export const xPath = async function (
   return (steps.length && steps[0].optimized ? "" : "/") + steps.join("/");
 };
 
-const xPathValue = async function (
+const xPathValue = async function xPathValue(
   node: ElementHandleAdapter,
   optimized?: boolean
 ): Promise<Step | null> {
@@ -256,7 +259,7 @@ const xPathValue = async function (
   return new Step(ownValue, (await node.nodeType()) === Node.DOCUMENT_NODE);
 };
 
-const xPathIndex = async function (
+const xPathIndex = async function xPathIndex(
   node: ElementHandleAdapter
 ): Promise<number> {
   /**
@@ -323,45 +326,3 @@ const xPathIndex = async function (
   }
   return -1; // An error occurred: |node| not found in parent's children.
 };
-
-// export const canGetJSPath = function (node: ElementHandleAdapter): boolean {
-//   let wp: (ElementHandleAdapter | null) | ElementHandleAdapter = node;
-//   while (wp) {
-//     const shadowRoot = wp.ancestorShadowRoot();
-//     if (
-//       shadowRoot &&
-//       shadowRoot.shadowRootType() !== ElementHandleAdapter.ShadowRootTypes.Open
-//     ) {
-//       return false;
-//     }
-//     wp = wp.ancestorShadowHost();
-//   }
-//   return true;
-// };
-
-// export const jsPath = function (
-//   node: ElementHandleAdapter,
-//   optimized?: boolean
-// ): string {
-//   if (node.nodeType() !== Node.ELEMENT_NODE) {
-//     return "";
-//   }
-
-//   const path = [];
-//   let wp: (ElementHandleAdapter | null) | ElementHandleAdapter = node;
-//   while (wp) {
-//     path.push(cssPath(wp, optimized));
-//     wp = wp.ancestorShadowHost();
-//   }
-//   path.reverse();
-//   let result = "";
-//   for (let i = 0; i < path.length; ++i) {
-//     const string = JSON.stringify(path[i]);
-//     if (i) {
-//       result += `.shadowRoot.querySelector(${string})`;
-//     } else {
-//       result += `document.querySelector(${string})`;
-//     }
-//   }
-//   return result;
-// };

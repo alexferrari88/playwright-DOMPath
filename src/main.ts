@@ -1,6 +1,6 @@
 ﻿import { chromium } from "playwright";
-import { ElementHandleAdapter } from "./ElementHandleAdapter";
-import { fullQualifiedSelector } from "./playwright-DOMPath";
+import { cssPath } from "./playwright-DOMPath";
+
 const USER_AGENTS = [
   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36",
   "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.121 Safari/537.36",
@@ -66,12 +66,11 @@ const main = async () => {
   await page.goto(url);
   const divs = await page.$$("div");
   for (const div of divs) {
-    const divAdapter = new ElementHandleAdapter(div);
     // const children = await divAdapter.children();
     // for (const child of children) {
     //   console.log(await child.getProperty("tagName"));
     // }
-    console.log(await fullQualifiedSelector(divAdapter, true));
+    console.log(await cssPath(div, true));
   }
   await browser.close();
 };
