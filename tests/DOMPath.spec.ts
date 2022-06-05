@@ -1,5 +1,5 @@
 ﻿import { expect, test } from "@playwright/test";
-import { cssPath } from "../src/DOMPath";
+import { cssPath, xPath } from "../src/DOMPath";
 
 test.describe("playwright-DOMPath", () => {
   test.describe("cssPath", () => {
