@@ -33,16 +33,16 @@ const cssPathStep = async function cssPathStep(
     return `#${CSS.escape(id)}`;
   }
 
-  if ((await node.nodeType()) !== Node.ELEMENT_NODE) {
+  if (node.nodeType() !== Node.ELEMENT_NODE) {
     return null;
   }
 
-  const id = await node.getAttribute("id");
+  const id = node.nodeId();
   if (optimized) {
     if (id) {
       return new Step(idSelector(id), true);
     }
-    const nodeNameLower = (await node.nodeName()).toLowerCase();
+    const nodeNameLower = node.nodeName().toLowerCase();
     if (
       nodeNameLower === "body" ||
       nodeNameLower === "head" ||
@@ -57,14 +57,14 @@ const cssPathStep = async function cssPathStep(
     return new Step(nodeName + idSelector(id), true);
   }
   const parent = await node.parentNode();
-  if (!parent || (await parent.nodeType()) === Node.DOCUMENT_NODE) {
+  if (!parent || parent.nodeType() === Node.DOCUMENT_NODE) {
     return new Step(nodeName, true);
   }
 
   async function prefixedElementClassNames(
     node: ElementHandleAdapter
   ): Promise<string[]> {
-    const classAttribute = await node.getAttribute("class");
+    const classAttribute = node.nodeClass();
     if (!classAttribute) {
       return [];
     }
@@ -91,7 +91,7 @@ const cssPathStep = async function cssPathStep(
     ++i
   ) {
     const sibling = siblings[i];
-    if ((await sibling.nodeType()) !== Node.ELEMENT_NODE) {
+    if (sibling.nodeType() !== Node.ELEMENT_NODE) {
       continue;
     }
     elementIndex += 1;
@@ -131,8 +131,8 @@ const cssPathStep = async function cssPathStep(
     isTargetNode &&
     nodeName.toLowerCase() === "input" &&
     (await node.getAttribute("type")) &&
-    !(await node.getAttribute("id")) &&
-    !(await node.getAttribute("class"))
+    !node.nodeId() &&
+    !node.nodeClass()
   ) {
     result += `[type=${CSS.escape((await node.getAttribute("type")) || "")}]`;
   }
@@ -152,7 +152,8 @@ export const cssPath = async function cssPath(
   optimized?: boolean
 ): Promise<string> {
   const node = new ElementHandleAdapter(elHandle);
-  if ((await node.nodeType()) !== Node.ELEMENT_NODE) {
+  await node.getParams();
+  if (node.nodeType() !== Node.ELEMENT_NODE) {
     return "";
   }
 
@@ -184,7 +185,8 @@ export const xPath = async function xPath(
   optimized?: boolean
 ): Promise<string> {
   const node = new ElementHandleAdapter(elHandle);
-  if ((await node.nodeType()) === Node.DOCUMENT_NODE) {
+  await node.getParams();
+  if (node.nodeType() === Node.DOCUMENT_NODE) {
     return "/";
   }
 
@@ -217,15 +219,15 @@ const xPathValue = async function xPathValue(
     return null;
   } // Error.
 
-  switch (await node.nodeType()) {
+  switch (node.nodeType()) {
     case Node.ELEMENT_NODE:
-      if (optimized && (await node.getAttribute("id"))) {
-        return new Step(`//*[@id="${await node.getAttribute("id")}"]`, true);
+      if (optimized && node.nodeId()) {
+        return new Step(`//*[@id="${node.nodeId()}"]`, true);
       }
-      ownValue = await node.localName();
+      ownValue = node.localName();
       break;
     case Node.ATTRIBUTE_NODE:
-      ownValue = `@${await node.nodeName()}`;
+      ownValue = `@${node.nodeName()}`;
       break;
     case Node.TEXT_NODE:
     case Node.CDATA_SECTION_NODE:
@@ -249,7 +251,7 @@ const xPathValue = async function xPathValue(
     ownValue += `[${ownIndex}]`;
   }
 
-  return new Step(ownValue, (await node.nodeType()) === Node.DOCUMENT_NODE);
+  return new Step(ownValue, node.nodeType() === Node.DOCUMENT_NODE);
 };
 
 const xPathIndex = async function xPathIndex(
@@ -268,25 +270,25 @@ const xPathIndex = async function xPathIndex(
     }
 
     if (
-      (await left.nodeType()) === Node.ELEMENT_NODE &&
-      (await right.nodeType()) === Node.ELEMENT_NODE
+      left.nodeType() === Node.ELEMENT_NODE &&
+      right.nodeType() === Node.ELEMENT_NODE
     ) {
-      return (await left.localName()) === (await right.localName());
+      return left.localName() === right.localName();
     }
 
-    if ((await left.nodeType()) === (await right.nodeType())) {
+    if (left.nodeType() === right.nodeType()) {
       return true;
     }
 
     // XPath treats CDATA as text nodes.
     const leftType =
-      (await left.nodeType()) === Node.CDATA_SECTION_NODE
+      left.nodeType() === Node.CDATA_SECTION_NODE
         ? Node.TEXT_NODE
-        : await left.nodeType();
+        : left.nodeType();
     const rightType =
-      (await right.nodeType()) === Node.CDATA_SECTION_NODE
+      right.nodeType() === Node.CDATA_SECTION_NODE
         ? Node.TEXT_NODE
-        : await right.nodeType();
+        : right.nodeType();
     return leftType === rightType;
   }
 
