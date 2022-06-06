@@ -1,8 +1,8 @@
 ﻿/* eslint-disable no-continue */
 /* eslint-disable no-shadow */
 import { JSDOM } from "jsdom";
-import { ElementHandle } from "playwright";
-import ElementHandleAdapter from "./ElementHandleAdapter";
+import { ElementHandle, Locator } from "playwright";
+import PlaywrightElementAdapter from "./PlaywrightElementAdapter";
 
 require("css.escape");
 
@@ -24,7 +24,7 @@ class Step {
 }
 
 const cssPathStep = async function cssPathStep(
-  node: ElementHandleAdapter,
+  node: PlaywrightElementAdapter,
   optimized: boolean,
   isTargetNode: boolean
 ): Promise<Step | null> {
@@ -62,7 +62,7 @@ const cssPathStep = async function cssPathStep(
   }
 
   async function prefixedElementClassNames(
-    node: ElementHandleAdapter
+    node: PlaywrightElementAdapter
   ): Promise<string[]> {
     const classAttribute = node.nodeClass();
     if (!classAttribute) {
@@ -148,18 +148,18 @@ const cssPathStep = async function cssPathStep(
 };
 
 export const cssPath = async function cssPath(
-  elHandle: ElementHandle,
+  elHandle: ElementHandle | Locator,
   optimized?: boolean
 ): Promise<string> {
-  const node = new ElementHandleAdapter(elHandle);
-  await node.getParams();
+  const node = new PlaywrightElementAdapter(elHandle);
+  await node.init();
   if (node.nodeType() !== Node.ELEMENT_NODE) {
     return "";
   }
 
   const steps = [];
-  let contextNode: ElementHandleAdapter | null =
-    node as ElementHandleAdapter | null;
+  let contextNode: PlaywrightElementAdapter | null =
+    node as PlaywrightElementAdapter | null;
   while (contextNode) {
     const step = await cssPathStep(
       contextNode,
@@ -181,18 +181,18 @@ export const cssPath = async function cssPath(
 };
 
 export const xPath = async function xPath(
-  elHandle: ElementHandle,
+  elHandle: ElementHandle | Locator,
   optimized?: boolean
 ): Promise<string> {
-  const node = new ElementHandleAdapter(elHandle);
-  await node.getParams();
+  const node = new PlaywrightElementAdapter(elHandle);
+  await node.init();
   if (node.nodeType() === Node.DOCUMENT_NODE) {
     return "/";
   }
 
   const steps = [];
-  let contextNode: ElementHandleAdapter | null =
-    node as ElementHandleAdapter | null;
+  let contextNode: PlaywrightElementAdapter | null =
+    node as PlaywrightElementAdapter | null;
   while (contextNode) {
     const step = await xPathValue(contextNode, optimized);
     if (!step) {
@@ -210,7 +210,7 @@ export const xPath = async function xPath(
 };
 
 const xPathValue = async function xPathValue(
-  node: ElementHandleAdapter,
+  node: PlaywrightElementAdapter,
   optimized?: boolean
 ): Promise<Step | null> {
   let ownValue;
@@ -255,15 +255,15 @@ const xPathValue = async function xPathValue(
 };
 
 const xPathIndex = async function xPathIndex(
-  node: ElementHandleAdapter
+  node: PlaywrightElementAdapter
 ): Promise<number> {
   /**
    * Returns -1 in case of error, 0 if no siblings matching the same expression,
    * <XPath index among the same expression-matching sibling nodes> otherwise.
    */
   async function areNodesSimilar(
-    left: ElementHandleAdapter,
-    right: ElementHandleAdapter
+    left: PlaywrightElementAdapter,
+    right: PlaywrightElementAdapter
   ): Promise<boolean> {
     if (await left.isStrictlyEqualTo(right)) {
       return true;
