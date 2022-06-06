@@ -17,13 +17,13 @@ Install with npm
 #### cssPath
 
 ```typescript
-cssPath: (elHandle: Playwright.ElementHandle, optimized?: boolean) => Promise<string>
+cssPath: (elHandle: Playwright.ElementHandle | Playwright.Locator, optimized?: boolean) => Promise<string>
 ```
 
 #### xPath
 
 ```typescript
-xPath: (elHandle: Playwright.ElementHandle, optimized?: boolean) => Promise<string>
+xPath: (elHandle: Playwright.ElementHandle | Playwright.Locator, optimized?: boolean) => Promise<string>
 ```
 
 ## Usage 🔧
@@ -34,7 +34,7 @@ Just import the `cssPath` or `xPath` from this module:
 import { cssPath, xPath } from "playwright-dompath";
 ```
 
-Then use either function by passing it the element you previously selected:
+Then use either function by passing it the element you previously selected (as ElementHandle or Locator):
 
 ```typescript
 const searchBar = await page.$('input[name="q"]');
@@ -72,7 +72,7 @@ XPath: /html/body/div[1]/div[3]/form/div[1]/div[1]/div[1]/div/div[2]/input
 
 ## Acknowledgements 🤗
 
-- This library reimplements the [Chrome DevTools DOMPath library](https://github.com/ChromeDevTools/devtools-frontend/blob/b6a3b2ae8a4c1d5847c2bb1535377e13ee3045be/front_end/panels/elements/DOMPath.ts) with modifications to allow the use of Playwright's ElementHandle
+- This library reimplements the [Chrome DevTools DOMPath library](https://github.com/ChromeDevTools/devtools-frontend/blob/b6a3b2ae8a4c1d5847c2bb1535377e13ee3045be/front_end/panels/elements/DOMPath.ts) with modifications to allow the use of Playwright's ElementHandle and Locator
 
 ## License 📝
 
