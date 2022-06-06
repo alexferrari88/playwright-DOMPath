@@ -70,6 +70,18 @@ CSS Path: body > div.L3eUgb > div.o3j99.ikrT4e.om7nvf > form > div:nth-child(1) 
 XPath: /html/body/div[1]/div[3]/form/div[1]/div[1]/div[1]/div/div[2]/input
 ```
 
+## TODO ✅
+
+- Improve functions' speed
+- Increase tests coverage (include edge cases)
+- Add better error handling
+
+## Contributing 🤝🏼
+
+Feel free to fork this repo and create a PR. I will review them and merge if ok.
+
+The above todos can be a very good place to start.
+
 ## Acknowledgements 🤗
 
 - This library reimplements the [Chrome DevTools DOMPath library](https://github.com/ChromeDevTools/devtools-frontend/blob/b6a3b2ae8a4c1d5847c2bb1535377e13ee3045be/front_end/panels/elements/DOMPath.ts) with modifications to allow the use of Playwright's ElementHandle and Locator
