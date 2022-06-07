@@ -15,7 +15,7 @@
     "typescript": "^4.7.3"
   },
   "name": "playwright-dompath",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Retrieve xpath and css selectors from ElementHandle objects in Playwright",
   "main": "./dist/DOMPath.js",
   "types": "./dist/DOMPath.d.js",
