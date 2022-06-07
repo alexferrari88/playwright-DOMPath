@@ -2,7 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
-## [0.0.5] — 2022-07-06
+## [0.0.6] — 2022-07-06
+
+No changes compared to 0.0.5. Had to bump the version number to be allowed to publish to the npm registry.
+
+## [0.0.5] — 2022-07-06 (Unpublished)
+
+_I made a mistake in the release script so I had to unpublish this version_
 
 ### Changed
 
