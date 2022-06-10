@@ -1,5 +1,9 @@
 ﻿# Playwright DOMPath 🎭
 
+[![MIT License](https://img.shields.io/apm/l/atomic-design-ui.svg?)](https://github.com/tterb/atomic-design-ui/blob/master/LICENSEs)
+[![NPM Version](https://img.shields.io/npm/v/playwright-dompath?style=flat-square)](https://www.npmjs.com/package/playwright-dompath)
+[![GitHub Last Commit](https://img.shields.io/github/last-commit/alexferrari88/playwright-DOMPath?style=flat-square)](https://img.shields.io/github/last-commit/alexferrari88/playwright-DOMPath?style=flat-square)
+
 This library implements the ChromeDevTools DOMPath functionality in Playwright.
 
 This means that you can retrieve the CSS selector or the XPath of any element you select in your Playwright code.
@@ -69,6 +73,10 @@ Which will output (class names may vary for you):
 CSS Path: body > div.L3eUgb > div.o3j99.ikrT4e.om7nvf > form > div:nth-child(1) > div.A8SBwf > div.RNNXgb > div > div.a4bIc > input
 XPath: /html/body/div[1]/div[3]/form/div[1]/div[1]/div[1]/div/div[2]/input
 ```
+
+## Used by
+
+- [ScrapeBlocks](https://github.com/alexferrari88/scrapeblocks): scraping automation framework based on Playwright
 
 ## TODO ✅
 
