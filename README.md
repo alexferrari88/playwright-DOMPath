@@ -9,6 +9,8 @@ This library implements the ChromeDevTools DOMPath functionality in Playwright.
 
 This means that you can retrieve the CSS selector or the XPath of any element you select in your Playwright code.
 
+🐍 _Python version here: [https://github.com/alexferrari88/playwright-dompath-py](https://github.com/alexferrari88/playwright-dompath-py)_
+
 ## Installation 📦
 
 Install with npm
