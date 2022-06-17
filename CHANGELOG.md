@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.6] — 2022-17-06
+
+### Changed
+
+Edited the package description to reflect the possibility of also using Locator objects. Need the version bump to publish to npm.
+
 ## [0.0.6] — 2022-07-06
 
 No changes compared to 0.0.5. Had to bump the version number to be allowed to publish to the npm registry.
